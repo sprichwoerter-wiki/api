@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ProverbRepository::class)]
+#[ORM\Index(columns: ['name'], name: 'proverb_name_idx')]
 #[Vich\Uploadable]
 class Proverb
 {

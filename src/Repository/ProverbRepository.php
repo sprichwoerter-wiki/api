@@ -21,21 +21,17 @@ class ProverbRepository extends ServiceEntityRepository
         parent::__construct($registry, Proverb::class);
     }
 
-    /**
-     * Returns an array of Proverb objects with pagination.
-     *
-     * @param int $offset
-     * @param int $limit
-     *
-     * @return Proverb[]
-     */
-    public function findWithPagination(int $offset, int $limit): array
+    public function search(string $query, int $offset, int $limit): array
     {
         $queryBuilder = $this->createQueryBuilder('p')
+            ->where('p.name LIKE :query')
+            // ->orWhere('p.explanation LIKE :query')
+            // ->orWhere('p.history LIKE :query')
+            // ->orWhere('p.example LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
             ->setMaxResults($limit)
             ->setFirstResult($offset)
             ->orderBy('p.id', 'ASC');
-
         return $queryBuilder->getQuery()->getResult();
     }
 

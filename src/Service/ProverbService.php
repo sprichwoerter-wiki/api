@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Proverb;
 use App\Repository\ProverbRepository;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProverbService
 {
@@ -14,14 +15,18 @@ class ProverbService
         $this->proverbRepository = $proverbRepository;
     }
 
-    public function listProverbs(int $offset, int $limit): array
+    public function findBySlug(string $slug): ?Proverb
     {
-        $proverbs = $this->proverbRepository->findWithPagination($offset, $limit);
-        return array_map(fn($proverb) => $proverb->asPartial(), $proverbs);
+        $proverb = $this->proverbRepository->findOneBy(['slug' => $slug]);
+        if (empty($proverb)) {
+            throw new NotFoundHttpException();
+        }
+        return $this->proverbRepository->findOneBy(['slug' => $slug]);
     }
 
-    public function findBySlug(string $slug): Proverb
+    public function search(string $query, int $offset, int $limit): array
     {
-        return $this->proverbRepository->findOneBy(['slug' => $slug]);
+        $proverbs = $this->proverbRepository->search($query, $offset, $limit);
+        return array_map(fn($proverb) => $proverb->asPartial(), $proverbs);
     }
 }

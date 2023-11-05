@@ -21,14 +21,14 @@ class ProverbController extends AbstractController
         $this->proverbsService = $proverbsService;
     }
 
-    #[Route('/api/proverbs', name: 'app_api_proverbs', methods: ['GET'])]
-    public function index(Request $request): JsonResponse
+    #[Route('/api/proverbs/search', name: 'app_api_proverb_search', methods: ['GET'])]
+    public function search(Request $request): JsonResponse
     {
-        // Pagination
+        $query = $request->get('query', '');
         $limit = (int)$request->get('limit', 30);
         $offset = (int)$request->get('offset', 0);
 
-        return $this->json($this->proverbsService->listProverbs($offset, $limit));
+        return $this->json($this->proverbsService->search($query, $offset, $limit));
     }
 
     #[Route('/api/proverbs/{slug}', name: 'app_api_proverb', methods: ['GET'])]
